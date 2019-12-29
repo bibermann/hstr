@@ -611,6 +611,16 @@ void hstr_get_env_configuration()
 
 unsigned print_prompt(void)
 {
+    color_init_pair(6, COLOR_YELLOW, -1);
+    color_attr_on(COLOR_PAIR(6));
+    color_attr_on(A_DIM);
+    mvprintw(hstr->promptY, 0, "%s", " HSTR ");
+    color_attr_off(A_DIM);
+    mvprintw(hstr->promptY, 6, "%s", "$ ");
+    color_attr_off(COLOR_PAIR(6));
+    refresh();
+    return 8;
+
     unsigned xoffset = 0, promptLength;
 
     if(hstr->theme & HSTR_THEME_COLOR) {
@@ -957,7 +967,7 @@ void print_selection_row(char* text, int y, int width, char* pattern)
     char screenLine[CMDLINE_LNG];
     char buffer[CMDLINE_LNG];
     hstr_strelide(buffer, text, width>2?width-2:0);
-    int size = snprintf(screenLine, width, " %s", buffer);
+    int size = snprintf(screenLine, width, "        %s", buffer);
     if(size < 0) screenLine[0]=0;
     mvprintw(y, 0, "%s", screenLine); clrtoeol();
 
@@ -1047,7 +1057,7 @@ void hstr_print_highlighted_selection_row(char* text, int y, int width)
     hstr_strelide(buffer, text, width>2?width-2:0);
     char screenLine[CMDLINE_LNG];
     snprintf(screenLine, getmaxx(stdscr)+1, "%s%-*.*s ",
-            (terminal_has_colors()?" ":">"),
+            (terminal_has_colors()?"        ":">"),
             getmaxx(stdscr)-2, getmaxx(stdscr)-2, buffer);
     mvprintw(y, 0, "%s", screenLine);
     if(hstr->theme & HSTR_THEME_COLOR) {
